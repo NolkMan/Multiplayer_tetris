@@ -9,6 +9,6 @@ set(CMAKE_C_FLAGS "-std=c99")
 #include_directories(${PROJECT_SOURCE_DIR})
 
 add_executable(tetris client.c ncurses_utils.c tetris_game.c client_server_comm.c)
-add_executable(server server.c)
+add_executable(server server.c server_utils.c)
 
 target_link_libraries(tetris curses)
