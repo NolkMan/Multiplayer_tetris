@@ -88,7 +88,7 @@ void add_to_board(struct tetris_data *data){
 	for (int i=0 ; i < 4; i++){
 		for (int j=0; j < 4;j++){
 			if (pieces[piece(data)][data->rot][i][j] == '#'){
-				data->board[data->y+i][data->x+j] = piece(data)+10;
+				data->board[data->y+i][data->x+j] = piece(data)+'a';
 			}
 		}
 	}
@@ -135,7 +135,7 @@ struct tetris_data create_new_game(){
 
 	for (int i = 0; i < 26; i++){
 		for (int j = 0; j < 14; j++){
-			new_game.board[i][j] = 0;
+			new_game.board[i][j] = 'z';
 		}
 	}
 
