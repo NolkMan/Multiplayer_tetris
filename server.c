@@ -29,12 +29,38 @@ int read_input(char **buffer, size_t *buff_size){
 	return false;
 }
 
+void server_loop(int server_fd, struct client_queue *c_queue){
+	char *buffer = NULL;
+	size_t buff_size = 0;
+	int running = true;
+	
+	struct timeval last, current;
 
+	gettimeofday(&current, NULL);
+
+	while (running){
+		last = current;
+		server_accept(server_fd, c_queue);
+		server_receive(c_queue);
+
+		if (read_input(&buffer, &buff_size)){
+			if (buffer[0] = 'c'){
+				running = false;
+			}
+		}
+
+		gettimeofday(&current, NULL);
+
+#if DEBUG_VERBOSITY >= 1
+		printf("Loop took %lu miliseconds\n", current.tv_usec - last.tv_usec);
+#endif
+	}
+}
 
 int main(){
 	struct client_queue * c_queue = init_client_queue();
 	int listen_fd = create_server(PORT);
-	//server_loop(listen_fd);
+	server_loop(listen_fd, c_queue);
 
 	free_client_queue(c_queue);
 }
