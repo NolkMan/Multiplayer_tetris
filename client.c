@@ -33,5 +33,6 @@ int main(int argc, char **argv){
 	}
 
 	write(sock, "Twoja stara\n", 12);
+	close(sock);
 	
 }
