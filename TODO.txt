@@ -1,0 +1,2 @@
+Add death check
+	Make death handlint

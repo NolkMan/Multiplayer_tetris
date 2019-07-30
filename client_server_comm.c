@@ -11,6 +11,7 @@
 
 #include "shared.h"
 
+
 int connect_to_server(char *ip_addr){
 	int sock;
 	struct sockaddr_in serv_addr;
