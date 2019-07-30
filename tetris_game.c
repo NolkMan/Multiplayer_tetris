@@ -9,7 +9,7 @@ int piece(struct tetris_data *data){
 	return data->pool[data->pool_index];
 }
 
-int can_move_left(int board[26][14], int piece, int rot, int y, int x){
+int can_move_left(char board[26][14], int piece, int rot, int y, int x){
 	int cx = x-1;
 	for (int i=0 ; i < 4; i++){
 		for (int j=0 ; j < 4; j++){
@@ -23,7 +23,7 @@ int can_move_left(int board[26][14], int piece, int rot, int y, int x){
 	return true;
 }
 
-int can_move_right(int board[26][14], int piece, int rot, int y, int x){
+int can_move_right(char board[26][14], int piece, int rot, int y, int x){
 	int cx = x+1;
 	for (int i=0 ; i < 4; i++){
 		for (int j=0 ; j < 4; j++){
@@ -37,7 +37,7 @@ int can_move_right(int board[26][14], int piece, int rot, int y, int x){
 	return true;
 }
 
-int can_rotate(int board[26][14], int piece, int rot, int y, int x){
+int can_rotate(char board[26][14], int piece, int rot, int y, int x){
 	int crot = rot + 1;
 	crot %= 4;
 	for (int i=0 ; i < 4; i++){
@@ -52,7 +52,7 @@ int can_rotate(int board[26][14], int piece, int rot, int y, int x){
 	return true;
 }
 
-int can_fall(int board[26][14], int piece, int rot, int y, int x){
+int can_fall(char board[26][14], int piece, int rot, int y, int x){
 	int cy = y+1;
 	for (int i=0 ; i < 4; i++){
 		for (int j=0 ; j < 4; j++){
@@ -94,13 +94,13 @@ void add_to_board(struct tetris_data *data){
 	}
 }
 
-void clear_line(int board[26][14], int line){
+void clear_line(char board[26][14], int line){
 	for (int i=2 ; i < 12; i++){
 		board[line][i] = 0;
 	}
 }
 
-int line_to_clear(int board[26][14], int line){
+int line_to_clear(char board[26][14], int line){
 	for (int i = 2; i < 12; i++){
 		if (board[line][i] == 0){
 			return false;
@@ -109,14 +109,14 @@ int line_to_clear(int board[26][14], int line){
 	return true;
 }
 
-void collapse_line(int board[26][14], int line){
+void collapse_line(char board[26][14], int line){
 	for (int i=2; i < 12; i++){
 		board[line+1][i] = board[line][i];
 		board[line][i] = 0;
 	}
 }
 
-int check_for_lines(int board[26][14]){
+int check_for_lines(char board[26][14]){
 	int cleared = 0;
 	for (int i=4; i < 24; i++){
 		if (line_to_clear(board, i)){

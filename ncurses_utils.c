@@ -105,6 +105,12 @@ int ncurses_init(){
 	return 1;
 }
 
+void setup_colors(int (*color_scheme)[3], int scheme_size){
+	for (int i =0 ; i < scheme_size; i++){
+		init_pair(color_scheme[i][0], color_scheme[i][1], color_scheme[i][2]);
+	}
+}
+
 void cexit(int ret){
 	endwin();
 	exit(ret);

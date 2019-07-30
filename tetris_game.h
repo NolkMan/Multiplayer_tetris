@@ -2,7 +2,7 @@
 #define TETRIS_GAME_H
 
 struct tetris_data{
-	int board[26][14];
+	char board[26][14];
 	int x, y;
 	int rot;
 	int pool[14]; 

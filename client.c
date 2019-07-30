@@ -1,41 +1,31 @@
+#define true 1
+#define false 0
+
+#define _XOPEN_SOURCE 700
 #include "stdio.h"
 #include "stdlib.h"
-#include "sys/socket.h"
-#include "netinet/in.h"
-#include "arpa/inet.h"
-#include "unistd.h"
 #include "string.h"
 
 #include "shared.h"
 
-/**
- * Will connect to the server
- * \param Ip of the server that user wants to connect to
- * \return On success returns socket that will be used to communicate with the server otherwise -1
- */
-int tetris_connect(char *ip_addr){
-	int sock;
-	struct sockaddr_in serv_addr;
-	if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0){
-		perror("Could not create socket");
-		return -1;
-	}
-	serv_addr.sin_family = AF_INET;
-	serv_addr.sin_port = htons(PORT);
+#include "ncurses_utils.h"
+#include "tetris_game.h"
+#include "color_sheme.h"
 
-	if (inet_pton(AF_INET, ip_addr, &serv_addr.sin_addr) < 0){
-		printf("Please provide a valid server address :)\n");
-		return -1;
+void game_loop(struct tetris_data *data){
+	int running = true;
+	int frame = 0;
+	while (running){
+		frame ++;
+		int input;
+		while ((input=getch()) != -1){
+			parse_input(data, input);
+		}
+		
+		if (frame % 6 == 0){
+			do_loop(data);
+		}
 	}
-
-	if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0){
-		printf("You've got a problem and connection failed\n");
-		return -1;
-	}
-	return sock;
-}
-
-void game_loop(){
 }
 
 void lobby_loop(){
@@ -49,4 +39,13 @@ int main(int argc, char **argv){
 		printf("Please provide an ip address of a server\n");
 		exit(0);
 	}
+
+	if (ncurses_init() < 0){
+		printf("Open colorful terminal to play");
+	}
+	setup_colors(color_scheme, color_scheme_size);
+
+
+
+	cexit(0);
 }

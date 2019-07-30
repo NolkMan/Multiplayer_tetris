@@ -24,6 +24,12 @@ void draw_symbol(int y, int x, int h, int w, char ** symbol, int *map);
 int ncurses_init();
 
 /**
+ * Setups color pairs from color_scheme
+ * \param color_scheme an 2d array scheme_size*3 that every element is of format {pair_id, color_fg, color_bg}
+ */
+void setup_colors(int (*color_scheme)[3], int scheme_size);
+
+/**
  * Will exit with properly closing ncurses
  */
 void cexit(int ret);
