@@ -15,7 +15,7 @@ void draw_controls(int y, int x, int color_fg, int color_bg, char up, char down,
  * \param symbol given symbol to draw
  * \param map of colors for every character in symbol
  */
-void draw_symbol(int y, int x, int h, int w, char ** symbol, int *map);
+void draw_line(int y, int x, int w, char * line, int map[]);
 
 /**
  * Will nicely initialize ncureses

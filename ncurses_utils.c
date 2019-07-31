@@ -83,13 +83,13 @@ void draw_digit(int y, int x, int digit, int color_fg, int color_bg){
 	}
 }
 
-void draw_symbol(int y, int x, int h, int w, char ** symbol, int *map){
-	for (int i =0 ; i < h; i++){
+void draw_line(int y, int x, int w, char * line, int map[]){
 		for (int j = 0; j < w; j++){
-			attron(COLOR_PAIR(map[symbol[i][j]]));
-			mvprintw(y+i, x+j, "  ");
+			if (line[j] != ' ' && line[j] != 0){
+				attron(COLOR_PAIR(map[line[j]]));
+				mvprintw(y, (x+j)*2, "  ");
+			}
 		}
-	}
 }
 
 int ncurses_init(){

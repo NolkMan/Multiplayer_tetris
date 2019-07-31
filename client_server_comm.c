@@ -11,6 +11,22 @@
 
 #include "shared.h"
 
+#include "poll.h"
+
+int get_message(int sock_fd, char *buf, int buff_size){
+	struct pollfd pfd[1];
+	pfd[0].fd = sock_fd;
+	pfd[0].events = POLLIN;
+
+	poll(pfd,1,10);
+
+	if (pfd[0].revents == POLLIN){
+		read(sock_fd, buf, buff_size);
+		return 1;
+	}
+	return 0;
+}
+
 
 int connect_to_server(char *ip_addr){
 	int sock;

@@ -5,6 +5,10 @@
 
 #define BUFF_SIZE 128
 
+struct client_game_data{
+	int is_dead;
+};
+
 struct client_queue_node{
 	int buff_i;
 	char buff[BUFF_SIZE];
@@ -14,6 +18,8 @@ struct client_queue_node{
 	struct client_queue_node *prev;
 	struct sockaddr_in cli_addr;
 	int cli_addr_len;
+
+	struct client_game_data g_data;
 };
 
 struct client_queue{

@@ -51,14 +51,14 @@ void server_receive(struct client_queue *queue){
 	i = 0;
 	while (node->connected == true){
 		// TODO make communication
-		if (p_fd[i].revents&POLLERR == POLLERR){
+		/*if (p_fd[i].revents&POLLERR == POLLERR){
 			close(node->socket);
 			struct client_queue_node *next_node = node->next;
 			queue_drop(queue, node);
 			node = next_node;
 			printf("Closed connection due to error");
 			continue;
-		}
+		}*/
 		if (p_fd[i].revents&POLLIN == POLLIN){
 			printf("There is pollin\n");
 			int n = read(node->socket, node->buff+node->buff_i, BUFF_SIZE - 1 - node->buff_i);

@@ -3,7 +3,6 @@
 
 #include "tetris_game.h"
 #include "stdlib.h"
-#include "pieces.h"
 
 int piece(struct tetris_data *data){
 	return data->pool[data->pool_index];
@@ -13,7 +12,7 @@ int can_move_left(char board[26][14], int piece, int rot, int y, int x){
 	int cx = x-1;
 	for (int i=0 ; i < 4; i++){
 		for (int j=0 ; j < 4; j++){
-			if (pieces[piece][rot][i][j] == '#'){
+			if (pieces[piece][rot][i][j] != ' '){
 			   if (board[y+i][cx+j] != 0){
 				   return false;
 			   }
@@ -27,7 +26,7 @@ int can_move_right(char board[26][14], int piece, int rot, int y, int x){
 	int cx = x+1;
 	for (int i=0 ; i < 4; i++){
 		for (int j=0 ; j < 4; j++){
-			if (pieces[piece][rot][i][j] == '#'){
+			if (pieces[piece][rot][i][j] != ' '){
 			   if (board[y+i][cx+j] != 0){
 				   return false;
 			   }
@@ -42,7 +41,7 @@ int can_rotate(char board[26][14], int piece, int rot, int y, int x){
 	crot %= 4;
 	for (int i=0 ; i < 4; i++){
 		for (int j=0 ; j < 4; j++){
-			if (pieces[piece][crot][i][j] == '#'){
+			if (pieces[piece][crot][i][j] != ' '){
 			   if (board[y+i][x+j] != 0){
 				   return false;
 			   }
@@ -56,7 +55,7 @@ int can_fall(char board[26][14], int piece, int rot, int y, int x){
 	int cy = y+1;
 	for (int i=0 ; i < 4; i++){
 		for (int j=0 ; j < 4; j++){
-			if (pieces[piece][rot][i][j] == '#'){
+			if (pieces[piece][rot][i][j] != ' '){
 			   if (board[cy+i][x+j] != 0){
 				   return false;
 			   }
@@ -87,7 +86,7 @@ void shift_pool(int *pool){
 void add_to_board(struct tetris_data *data){
 	for (int i=0 ; i < 4; i++){
 		for (int j=0; j < 4;j++){
-			if (pieces[piece(data)][data->rot][i][j] == '#'){
+			if (pieces[piece(data)][data->rot][i][j] != ' '){
 				data->board[data->y+i][data->x+j] = piece(data)+'a';
 			}
 		}
@@ -130,20 +129,32 @@ int check_for_lines(char board[26][14]){
 	return cleared;
 }
 
+int check_if_dead(char board[26][14]){
+	for (int i=2; i < 12; i++){
+		if (board[3][i] != 0){
+			return true;
+		}
+	}
+}
+
 struct tetris_data create_new_game(){
 	struct tetris_data new_game;
 
 	for (int i = 0; i < 26; i++){
 		for (int j = 0; j < 14; j++){
-			new_game.board[i][j] = 'z';
+			new_game.board[i][j] = 0;
 		}
 	}
 
 	for (int i=0; i < 26;i++){
-		new_game.board[i][0] = 1;
-		new_game.board[i][1] = 1;
-		new_game.board[i][12] = 1;
-		new_game.board[i][13] = 1;
+		new_game.board[i][0] = 'z';
+		new_game.board[i][1] = 'z';
+		new_game.board[i][12] = 'z';
+		new_game.board[i][13] = 'z';
+	}
+	for (int i=0 ; i < 14; i++){
+		new_game.board[24][i] = 'z';
+		new_game.board[25][i] = 'z';
 	}
 
 	randomize_pool(new_game.pool);
@@ -153,6 +164,7 @@ struct tetris_data create_new_game(){
 	new_game.y = 0;
 	new_game.rot = 0;
 	new_game.pool_index = 0;
+	new_game.is_dead = false;
 
 	return new_game;
 }
@@ -200,4 +212,8 @@ void do_loop(struct tetris_data *data){
 		int s = check_for_lines(data->board);
 		data->score += s*s;
 	}
+
+	/*if (check_if_dead(data->board)){
+		data->is_dead = true;
+	}*/
 }

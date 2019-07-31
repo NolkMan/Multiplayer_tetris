@@ -1,6 +1,8 @@
 #ifndef TETRIS_GAME_H
 #define TETRIS_GAME_H
 
+#include "pieces.h"
+
 struct tetris_data{
 	char board[26][14];
 	int x, y;
@@ -8,6 +10,7 @@ struct tetris_data{
 	int pool[14]; 
 	int pool_index;
 	int score;
+	int is_dead;
 };
 
 struct tetris_data create_new_game();

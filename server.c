@@ -11,6 +11,7 @@
 
 #include "shared.h"
 #include "server_utils.h"
+#include "comm_utils.h"
 
 
 #define DEBUG_VERBOSITY 0
@@ -18,11 +19,14 @@
 struct game_data{
 	int phase;
 
+	int alive;
 	int max_score;
 };
 
 const int PHASE_LOBBY = 1;
-const int PHASE_GAME = 2;
+const int PHASE_START = 2;
+const int PHASE_GAME = 3;
+const int PHASE_END = 4;
 
 int read_input(char **buffer, size_t *buff_size){
 	struct pollfd p_fd[1];
@@ -38,8 +42,53 @@ int read_input(char **buffer, size_t *buff_size){
 	return false;
 }
 
-void manage_clients(){
+void manage_clients(struct game_data *g_data, struct client_queue *c_queue){
+	struct client_queue_node *node = c_queue->first;
 
+	while (node != c_queue->last){
+		int message = check_for_message(node->buff);
+		if (message == MESSAGE_DEATH){
+			node->g_data.is_dead = true;
+			g_data->alive --;
+		}
+		node = node->next;
+	}
+
+	if (g_data->phase == PHASE_GAME && g_data->alive <= 0){
+		g_data->phase = PHASE_END;
+	}
+
+	if (g_data->phase == PHASE_START){
+		node = c_queue->first;
+		char * message = generate_message(MESSAGE_GAME_START);
+		if (message == NULL){ // TODO change this?
+			exit(0);
+		}
+		int mess_len = strlen(message);
+		while (node != c_queue->last){
+			write(node->socket, message, mess_len);
+			node->g_data.is_dead = false;
+			node = node->next;
+		}
+		g_data->alive = c_queue->client_queue_size;
+		free(message);
+		g_data->phase = PHASE_GAME;
+	}
+
+	if (g_data->phase == PHASE_END){
+		node = c_queue->first;
+		char * message = generate_message(MESSAGE_GAME_END);
+		if (message == NULL){ // TODO change this?
+			exit(0);
+		}
+		int mess_len = strlen(message);
+		while (node != c_queue->last){
+			write(node->socket, message, mess_len);
+			node = node->next;
+		}
+		free(message);
+		g_data->phase = PHASE_LOBBY;
+	}
 }
 
 void server_loop(int server_fd, struct client_queue *c_queue){
@@ -62,14 +111,18 @@ void server_loop(int server_fd, struct client_queue *c_queue){
 		server_receive(c_queue);
 
 		if (read_input(&buffer, &buff_size)){
-			if (buffer[0] = 'c'){
+			if (buffer[0] == 'c'){
 				running = false;
+			}
+			if (buffer[0] == 's'){
+				g_data.phase = PHASE_START;
 			}
 		}
 
+		manage_clients(&g_data, c_queue);
+
 		gettimeofday(&current, NULL);
-
-
+		printf("%d\n", g_data.phase);
 
 #if DEBUG_VERBOSITY >= 1
 		printf("Loop took %lu miliseconds\n", current.tv_usec - last.tv_usec);
