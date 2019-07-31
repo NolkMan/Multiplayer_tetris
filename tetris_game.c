@@ -213,7 +213,7 @@ void do_loop(struct tetris_data *data){
 		data->score += s*s;
 	}
 
-	/*if (check_if_dead(data->board)){
+	if (check_if_dead(data->board)){
 		data->is_dead = true;
-	}*/
+	}
 }
