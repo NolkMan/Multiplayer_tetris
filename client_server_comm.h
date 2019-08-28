@@ -1,11 +1,19 @@
 #ifndef CLIENT_SERVER_COMM_H
 #define CLIENT_SERVER_COMM_H
 
+struct server_data{
+	int sock_fd;
+	unsigned int buff_size;
+	char buff[64];
+	char buff_i;
+};
+
+
 /**
  * Will try to get a message from the socket
- * \return 0 if there was no message, 1 otherwise
+ * \return Code for the message that was delivered
  */
-int get_message(int sock_fd, char *buf, int buff_size);
+int get_message(struct server_data *s_data);
 
 
 /**

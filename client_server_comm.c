@@ -10,21 +10,30 @@
 #include "string.h"
 
 #include "shared.h"
+#include "comm_utils.h"
 
 #include "poll.h"
 
-int get_message(int sock_fd, char *buf, int buff_size){
+int get_message(struct server_data *s_data){
 	struct pollfd pfd[1];
-	pfd[0].fd = sock_fd;
+	pfd[0].fd = s_data->sock_fd;
 	pfd[0].events = POLLIN;
 
 	poll(pfd,1,10);
 
-	if (pfd[0].revents == POLLIN){
-		read(sock_fd, buf, buff_size);
-		return 1;
+	if ((pfd[0].revents&POLLIN) == POLLIN){
+		int n = read(s_data->sock_fd, 
+				s_data->buff + s_data->buff_i, 
+				s_data->buff_size);
+		s_data->buff_i += n;
 	}
-	return 0;
+
+	int code = check_for_message(s_data->buff);
+	if (code != NO_MESSAGE){
+		int n = clear_message(s_data->buff);
+		s_data->buff_i -= n;
+	}
+	return code;
 }
 
 

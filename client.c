@@ -16,19 +16,17 @@
 #include "client_server_comm.h"
 #include "comm_utils.h"
 
-void game_loop(struct tetris_data *data, int sock_fd){
+void game_loop(struct tetris_data *data, struct server_data *s_data){
 	int running = true;
 	int frame = 0;
-	size_t buff_size = 64;
-	char buf[64];
 	while (running){
 		frame ++;
 		int input;
 		while ((input=getch()) != -1){
 			parse_input(data, input);
 		}
-		if (get_message(sock_fd,buf,buff_size)){
-			int code = check_for_message(buf);
+		int code = get_message(s_data);
+		if (code != NO_MESSAGE){
 			if (code == MESSAGE_GAME_END){
 				running = false;
 			}
@@ -43,7 +41,7 @@ void game_loop(struct tetris_data *data, int sock_fd){
 				if (message == NULL){
 					cexit(0);
 				}
-				write(sock_fd, message, strlen(message));
+				write(s_data->sock_fd, message, strlen(message));
 				free(message);
 			}
 		}
@@ -65,16 +63,14 @@ void game_loop(struct tetris_data *data, int sock_fd){
 	}
 }
 
-void lobby_loop(int sock_fd){
-	size_t buff_size = 64;
-	char buf[64];
+void lobby_loop(struct server_data *s_data){
 	int running = true;
 	while (running){
-		if (get_message(sock_fd,buf,buff_size)){
-			int code = check_for_message(buf);
+		int code = get_message(s_data);
+		if (code != NO_MESSAGE){
 			if (code == MESSAGE_GAME_START){
 				struct tetris_data data = create_new_game();
-				game_loop(&data, sock_fd);
+				game_loop(&data, s_data);
 			}
 		}
 	}
@@ -98,7 +94,14 @@ int main(int argc, char **argv){
 	if (sock_fd < 0){
 		cexit(0);
 	}
-	lobby_loop(sock_fd);
+
+	struct server_data s_data;
+	s_data.sock_fd = sock_fd;
+	s_data.buff_size=64;
+	s_data.buff_i = 0;
+	memset(s_data.buff, '\0', sizeof(s_data.buff));
+
+	lobby_loop(&s_data);
 
 	cexit(0);
 }
