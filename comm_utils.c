@@ -27,6 +27,7 @@ char * get_str(int code){
 		case MESSAGE_GAME_START: return "ss";
 		case MESSAGE_GAME_END: return "se";
 	}
+	return NULL;
 }
 
 char * generate_message_with_param(int code, int param){
@@ -53,8 +54,16 @@ int check_for_message(char *buf){
 		if (buf[i] == DELIM)
 			return find_code(buf);
 	}
+	return NO_MESSAGE;
 }
 
-void clear_message(char *buf){
-
+int clear_message(char *buf){
+	for (int i=0; buf[i] != 0; i++){
+		if (buf[i] == DELIM){
+			if (buf[i+1] == '\n') i++;
+			strcpy(buf, buf+i+1);
+			return i+1;
+		}
+	}
+	return 0;
 }

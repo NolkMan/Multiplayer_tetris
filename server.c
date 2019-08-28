@@ -47,11 +47,17 @@ void manage_clients(struct game_data *g_data, struct client_queue *c_queue){
 
 	while (node != c_queue->last){
 		int message = check_for_message(node->buff);
+		if (message != NO_MESSAGE){
+			int n = clear_message(node->buff);
+			node->buff_i -= n;
+		}
 		if (message == MESSAGE_DEATH){
 			node->g_data.is_dead = true;
 			g_data->alive --;
 		}
 		node = node->next;
+		if (message != 0)
+			printf("%d\n", message);
 	}
 
 	if (g_data->phase == PHASE_GAME && g_data->alive <= 0){
@@ -122,9 +128,11 @@ void server_loop(int server_fd, struct client_queue *c_queue){
 		manage_clients(&g_data, c_queue);
 
 		gettimeofday(&current, NULL);
-		printf("%d\n", g_data.phase);
 
-#if DEBUG_VERBOSITY >= 1
+
+		//printf("%d\n", g_data.phase);
+
+#if DEBUG_VERBOSITY >= 2
 		printf("Loop took %lu miliseconds\n", current.tv_usec - last.tv_usec);
 #endif
 	}

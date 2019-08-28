@@ -1,6 +1,7 @@
 #ifndef COMM_UTILS_H
 #define COMM_UTILS_H
 
+#define NO_MESSAGE 0
 #define MESSAGE_ACK 1
 
 #define MESSAGE_SCORE 11
@@ -24,7 +25,8 @@ int check_for_message(char *buf);
 
 /**
  * If message was read an processed then this function will clear the buffer
+ * \return Amount of characters deleted from the buffer that need to be substracted from buff_i
  */
-void clear_message(char *buf); 
+int clear_message(char *buf); 
 
 #endif
