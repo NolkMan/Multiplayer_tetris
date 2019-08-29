@@ -4,8 +4,8 @@
 #include "comm_utils.h"
 
 void comm_utils_tests(){
-	char param[] = "1000";
-	char * message = generate_message_with_param(MESSAGE_SCORE, param);
+	char param[] = "1";
+	char * message = generate_message_with_param(MESSAGE_MAX_SCORE, param);
 	printf("Message: \"%s\"\n", message);
 	char *par = NULL;
 	int code = check_for_message(message, &par);

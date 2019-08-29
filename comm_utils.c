@@ -28,6 +28,7 @@ char * get_str(int code){
 		case MESSAGE_SCORE: return "cs";
 		case MESSAGE_DEATH: return "cd";
 		case MESSAGE_GAME_START: return "ss";
+		case MESSAGE_MAX_SCORE: return "sc";
 		case MESSAGE_GAME_END: return "se";
 	}
 	return NULL;

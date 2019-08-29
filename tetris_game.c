@@ -165,6 +165,8 @@ struct tetris_data create_new_game(){
 	new_game.rot = 0;
 	new_game.pool_index = 0;
 	new_game.is_dead = false;
+	new_game.score = 0;
+	new_game.score_updated = false;
 
 	return new_game;
 }
@@ -211,7 +213,8 @@ void do_loop(struct tetris_data *data){
 		}
 		int s = check_for_lines(data->board);
 		data->score += s*s;
-		data->score_updated = true;
+		if (s)
+			data->score_updated = true;
 	}
 
 	if (check_if_dead(data->board)){

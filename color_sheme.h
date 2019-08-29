@@ -128,6 +128,7 @@ int color_map[] = {
 
 int color_scheme_size = 8;
 int color_scheme[][3] = {
+	{1 , COLOR_WHITE, COLOR_BLACK},
 	{40, COLOR_CYAN, COLOR_CYAN},
 	{41, COLOR_WHITE, COLOR_WHITE},
 	{42, COLOR_BLUE, COLOR_BLUE},

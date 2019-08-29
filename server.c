@@ -45,6 +45,8 @@ int read_input(char **buffer, size_t *buff_size){
 void manage_clients(struct game_data *g_data, struct client_queue *c_queue){
 	struct client_queue_node *node = c_queue->first;
 
+	int send_max_score = 0;
+
 	char *param;
 	while (node != c_queue->last){
 		int message = check_for_message(node->buff, &param);
@@ -59,6 +61,8 @@ void manage_clients(struct game_data *g_data, struct client_queue *c_queue){
 			node->g_data.score = score;
 			if (score > g_data->max_score){
 				g_data->max_score = score;
+				send_max_score = true;
+				printf("Max score is now: %d\n", score);
 			}
 		}
 		if (message == MESSAGE_DEATH){
@@ -66,8 +70,20 @@ void manage_clients(struct game_data *g_data, struct client_queue *c_queue){
 			g_data->alive --;
 		}
 		node = node->next;
-		if (message != 0)
-			printf("%d\n", message);
+	}
+	if (send_max_score){
+		node = c_queue->first;
+
+		char sint[10];
+		sprintf(sint,"%d", g_data->max_score);
+		printf("%s\n", sint);
+		char *message = generate_message_with_param(MESSAGE_MAX_SCORE, sint);
+		while (node != c_queue->last){
+			write(node->socket, message, strlen(message));
+			node = node->next;
+		}
+		free(message);
+		send_max_score = 0;
 	}
 
 	if (g_data->phase == PHASE_GAME && g_data->alive <= 0){
@@ -123,7 +139,6 @@ void server_loop(int server_fd, struct client_queue *c_queue){
 
 	struct game_data g_data;
 	g_data.phase = PHASE_LOBBY;
-	g_data.max_score = 0;
 
 	gettimeofday(&current, NULL);
 
@@ -138,7 +153,7 @@ void server_loop(int server_fd, struct client_queue *c_queue){
 				running = false;
 			}
 			if (buffer[0] == 's'){
-				printf("Changing phase to START");
+				printf("Changing phase to START\n");
 				g_data.phase = PHASE_START;
 			}
 		}

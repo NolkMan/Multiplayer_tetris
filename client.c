@@ -41,7 +41,8 @@ void game_loop(struct tetris_data *data, struct server_data *s_data){
 		
 		if (frame % 6 == 0){
 			int d = data->is_dead;
-			do_loop(data);
+			if (!d)
+				do_loop(data);
 			if (data->score_updated){
 				char scorestr[10];
 				sprintf(scorestr, "%d", data->score);
@@ -94,6 +95,11 @@ void lobby_loop(struct server_data *s_data){
 				game_loop(&data, s_data);
 			}
 		}
+		erase();
+
+		write_line(1,1, "This is lobby");
+
+		refresh();
 	}
 }
 

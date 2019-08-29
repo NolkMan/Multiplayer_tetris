@@ -92,6 +92,11 @@ void draw_line(int y, int x, int w, char * line, int map[]){
 		}
 }
 
+void write_line(int y, int x, char *line){
+	attron(COLOR_PAIR(1));
+	mvprintw(y,x, "%s", line);
+}
+
 int ncurses_init(){
 	initscr();
 	timeout(0);

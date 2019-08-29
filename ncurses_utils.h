@@ -17,6 +17,8 @@ void draw_controls(int y, int x, int color_fg, int color_bg, char up, char down,
  */
 void draw_line(int y, int x, int w, char * line, int map[]);
 
+void write_line(int y, int x, char *line);
+
 /**
  * Will nicely initialize ncureses
  * \return -1 On fail and 1 on success
