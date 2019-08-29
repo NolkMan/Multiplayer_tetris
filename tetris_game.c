@@ -211,6 +211,7 @@ void do_loop(struct tetris_data *data){
 		}
 		int s = check_for_lines(data->board);
 		data->score += s*s;
+		data->score_updated = true;
 	}
 
 	if (check_if_dead(data->board)){
