@@ -15,7 +15,7 @@
 #include "poll.h"
 
 
-int get_message(struct server_data *s_data, char *param){
+int get_message(struct server_data *s_data, char **param){
 	struct pollfd pfd[1];
 	pfd[0].fd = s_data->sock_fd;
 	pfd[0].events = POLLIN;

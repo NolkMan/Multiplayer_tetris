@@ -47,7 +47,7 @@ void manage_clients(struct game_data *g_data, struct client_queue *c_queue){
 
 	char *param;
 	while (node != c_queue->last){
-		int message = check_for_message(node->buff, param);
+		int message = check_for_message(node->buff, &param);
 		if (message != NO_MESSAGE){
 			int n = clear_message(node->buff);
 			node->buff_i -= n;

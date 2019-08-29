@@ -27,7 +27,7 @@ void game_loop(struct tetris_data *data, struct server_data *s_data){
 		while ((input=getch()) != -1){
 			parse_input(data, input);
 		}
-		int code = get_message(s_data, param);
+		int code = get_message(s_data, &param);
 		if (code != NO_MESSAGE){
 			if (code == MESSAGE_MAX_SCORE){
 				data->max_score = atoi(param);
@@ -42,6 +42,14 @@ void game_loop(struct tetris_data *data, struct server_data *s_data){
 		if (frame % 6 == 0){
 			int d = data->is_dead;
 			do_loop(data);
+			if (data->score_updated){
+				char scorestr[10];
+				sprintf(scorestr, "%d", data->score);
+				char * message = generate_message_with_param(MESSAGE_SCORE, scorestr);
+				if (message == NULL){ cexit(0); }
+				write(s_data->sock_fd, message, strlen(message));
+				data->score_updated = 0;
+			}
 			
 			if (d != data->is_dead){
 				char * message = generate_message(MESSAGE_DEATH);
@@ -74,7 +82,7 @@ void lobby_loop(struct server_data *s_data){
 	char *param = NULL;
 	int running = true;
 	while (running){
-		int code = get_message(s_data, param);
+		int code = get_message(s_data, &param);
 		if (code != NO_MESSAGE){
 			// There should be no message in lobby that need a param
 			if (param != NULL){ 

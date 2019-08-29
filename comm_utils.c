@@ -33,11 +33,6 @@ char * get_str(int code){
 	return NULL;
 }
 
-char * generate_message_with_param(int code, int param){
-
-
-}
-
 char * generate_message(int code){
 	char * mess = malloc(4*sizeof(char));
 	if (mess == NULL){
@@ -52,23 +47,42 @@ char * generate_message(int code){
 	return mess;
 }
 
-void get_param(char *buf, int i, char *param){
+// param: 123
+// 0123456789
+// ss 123:0
+char * generate_message_with_param(int code, char *param){
+	int plen = strlen(param);
+	char * mess = malloc((5+plen)*sizeof(char));
+	if (mess == NULL){
+		perror("Could not allocate memory for message");
+		return NULL;
+	}
+	char * bg = get_str(code);
+	mess[0] = bg[0];
+	mess[1] = bg[1];
+	mess[2] = ' ';
+	strcpy(mess+3, param);
+	mess[3+plen] = DELIM;
+	mess[4+plen] = 0;
+	return mess;
+}
+
+void get_param(char *buf, int i, char **param){
 // 01234567
 // cc 123:
 	int param_len = i-3;
-	param = (char*) malloc((param_len+1)*sizeof(char));
+	(*param) = (char*) malloc((param_len+1)*sizeof(char));
 	if (param == NULL){
-		//TODO Close all connections
-		exit(0);
+		return;
 	}
 
 	for (int j=0 ; j < param_len; j++){
-		param[j] = buf[j+3];
+		(*param)[j] = buf[j+3];
 	}
-	param[param_len] = '\0';
+	(*param)[param_len] = '\0';
 }
 
-int check_for_message(char *buf, char *param){
+int check_for_message(char *buf, char **param){
 	for (int i=0; buf[i] != 0; i++){
 		if (buf[i] == DELIM){
 			int code = find_code(buf);
