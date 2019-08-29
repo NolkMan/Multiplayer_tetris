@@ -19,14 +19,21 @@
 void game_loop(struct tetris_data *data, struct server_data *s_data){
 	int running = true;
 	int frame = 0;
+
+	char *param = NULL;
 	while (running){
 		frame ++;
 		int input;
 		while ((input=getch()) != -1){
 			parse_input(data, input);
 		}
-		int code = get_message(s_data);
+		int code = get_message(s_data, param);
 		if (code != NO_MESSAGE){
+			if (code == MESSAGE_MAX_SCORE){
+				data->max_score = atoi(param);
+				free(param);
+				param = NULL;
+			}
 			if (code == MESSAGE_GAME_END){
 				running = false;
 			}
@@ -64,10 +71,16 @@ void game_loop(struct tetris_data *data, struct server_data *s_data){
 }
 
 void lobby_loop(struct server_data *s_data){
+	char *param = NULL;
 	int running = true;
 	while (running){
-		int code = get_message(s_data);
+		int code = get_message(s_data, param);
 		if (code != NO_MESSAGE){
+			// There should be no message in lobby that need a param
+			if (param != NULL){ 
+				free(param);
+				param = NULL;
+			}
 			if (code == MESSAGE_GAME_START){
 				struct tetris_data data = create_new_game();
 				game_loop(&data, s_data);

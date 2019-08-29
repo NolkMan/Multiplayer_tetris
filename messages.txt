@@ -1,0 +1,13 @@
+NO_MESSAGE - code for when code did not find message in buffer
+
+MESSAGE_ACK "ak" acknowledgement that the client is still connected and similar
+
+MESSAGE_GAME_STARTED "ct" client started a game
+MESSAGE_SCORE "cs <number>" client achieved this score
+MESSAGE_DEATH "cd" client died
+
+MESSAGE_GAME_START "ss" server started a server
+	- Schould be responded with game started instantly to not be droppped as a client
+MESSAGE_MAX_SCORE "sc <number>" server message with best achieved score
+MESSAGE_GAME_END "se" server ended the game and the client should return to lobby
+

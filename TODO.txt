@@ -1,4 +1,13 @@
+Add score communication
+	The messages are already supported for score
+
+Add starting message (ct message)
+
 Add death check
 	Make death handlint
 
 Add dropping clients
+	Drop clients that dont responds to game start
+	Add timeout
+	Add acks
+	Drop clients when game is starting

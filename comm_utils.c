@@ -10,10 +10,12 @@ int find_code(char *buf){
 	if (buf[0] == 'a' && buf[1] == 'k') return MESSAGE_ACK;
 	if (buf[0] == 'c'){
 		if (buf[1] == 's') return MESSAGE_SCORE;
+		if (buf[1] == 't') return MESSAGE_GAME_STARTED;
 		if (buf[1] == 'd') return MESSAGE_DEATH;
 	}
 	if (buf[0] == 's'){
 		if (buf[1] == 's') return MESSAGE_GAME_START;
+		if (buf[1] == 'c') return MESSAGE_MAX_SCORE;
 		if (buf[1] == 'e') return MESSAGE_GAME_END;
 	}
 	return -1;
@@ -22,6 +24,7 @@ int find_code(char *buf){
 char * get_str(int code){
 	switch(code){
 		case MESSAGE_ACK: return "ak";
+		case MESSAGE_GAME_STARTED: return "ct";
 		case MESSAGE_SCORE: return "cs";
 		case MESSAGE_DEATH: return "cd";
 		case MESSAGE_GAME_START: return "ss";
@@ -49,15 +52,38 @@ char * generate_message(int code){
 	return mess;
 }
 
-int check_for_message(char *buf){
+void get_param(char *buf, int i, char *param){
+// 01234567
+// cc 123:
+	int param_len = i-3;
+	param = (char*) malloc((param_len+1)*sizeof(char));
+	if (param == NULL){
+		//TODO Close all connections
+		exit(0);
+	}
+
+	for (int j=0 ; j < param_len; j++){
+		param[j] = buf[j+3];
+	}
+	param[param_len] = '\0';
+}
+
+int check_for_message(char *buf, char *param){
 	for (int i=0; buf[i] != 0; i++){
-		if (buf[i] == DELIM)
-			return find_code(buf);
+		if (buf[i] == DELIM){
+			int code = find_code(buf);
+			if (code == MESSAGE_SCORE ||
+					code == MESSAGE_MAX_SCORE){
+				get_param(buf, i, param);
+			}
+			return code;
+		}
 	}
 	return NO_MESSAGE;
 }
 
 int clear_message(char *buf){
+	//TODO dont use strcpy
 	for (int i=0; buf[i] != 0; i++){
 		if (buf[i] == DELIM){
 			if (buf[i+1] == '\n') i++;

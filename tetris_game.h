@@ -10,6 +10,7 @@ struct tetris_data{
 	int pool[14]; 
 	int pool_index;
 	int score;
+	int max_score;
 	int is_dead;
 };
 

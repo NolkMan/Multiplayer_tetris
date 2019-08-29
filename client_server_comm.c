@@ -14,7 +14,8 @@
 
 #include "poll.h"
 
-int get_message(struct server_data *s_data){
+
+int get_message(struct server_data *s_data, char *param){
 	struct pollfd pfd[1];
 	pfd[0].fd = s_data->sock_fd;
 	pfd[0].events = POLLIN;
@@ -28,7 +29,7 @@ int get_message(struct server_data *s_data){
 		s_data->buff_i += n;
 	}
 
-	int code = check_for_message(s_data->buff);
+	int code = check_for_message(s_data->buff, param);
 	if (code != NO_MESSAGE){
 		int n = clear_message(s_data->buff);
 		s_data->buff_i -= n;

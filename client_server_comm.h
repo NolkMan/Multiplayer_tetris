@@ -11,9 +11,10 @@ struct server_data{
 
 /**
  * Will try to get a message from the socket
+ * \param param parameter of the message that need to be uninitialized and then freed (look at messages.txt)
  * \return Code for the message that was delivered
  */
-int get_message(struct server_data *s_data);
+int get_message(struct server_data *s_data, char *param);
 
 
 /**
