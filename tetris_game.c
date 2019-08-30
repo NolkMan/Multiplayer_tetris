@@ -147,14 +147,14 @@ struct tetris_data create_new_game(){
 	}
 
 	for (int i=0; i < 26;i++){
-		new_game.board[i][0] = 'z';
-		new_game.board[i][1] = 'z';
-		new_game.board[i][12] = 'z';
-		new_game.board[i][13] = 'z';
+		new_game.board[i][0] = 'b';
+		new_game.board[i][1] = 'b';
+		new_game.board[i][12] = 'b';
+		new_game.board[i][13] = 'b';
 	}
 	for (int i=0 ; i < 14; i++){
-		new_game.board[24][i] = 'z';
-		new_game.board[25][i] = 'z';
+		new_game.board[24][i] = 'b';
+		new_game.board[25][i] = 'b';
 	}
 
 	randomize_pool(new_game.pool);
