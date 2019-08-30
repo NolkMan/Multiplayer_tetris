@@ -6,6 +6,10 @@ Add starting message (ct message)
 Add death check
 	Make death handlint
 
+Check and drop clients with illegal messages
+
+Update clearing method of buffer in comm_untils
+
 Add dropping clients
 	Drop clients that dont responds to game start
 	Add timeout
