@@ -6,6 +6,12 @@
 void draw_digit(int y, int x, int digit, int color_fg, int color_bg);
 
 /**
+ * Will draw a number
+ * \param x right most coordinate of the number
+ */
+void draw_number(int y, int x, int number, int color_fg, int color_bg);
+
+/**
  * Will draw control d-pad on screen with specified controls
  */
 void draw_controls(int y, int x, int color_fg, int color_bg, char up, char down, char left, char right);

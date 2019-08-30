@@ -167,6 +167,7 @@ struct tetris_data create_new_game(){
 	new_game.is_dead = false;
 	new_game.score = 0;
 	new_game.score_updated = false;
+	new_game.max_score = 0;
 
 	return new_game;
 }

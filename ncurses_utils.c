@@ -83,6 +83,15 @@ void draw_digit(int y, int x, int digit, int color_fg, int color_bg){
 	}
 }
 
+void draw_number(int y, int x, int number, int color_fg, int color_bg){
+	while (number != 0){
+		draw_digit(y, x-5, number%10, 
+				color_fg, color_bg);
+		number /= 10;
+		x -= 7;
+	}
+}
+
 void draw_line(int y, int x, int w, char * line, int map[]){
 		for (int j = 0; j < w; j++){
 			if (line[j] != ' ' && line[j] != 0){

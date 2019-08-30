@@ -73,6 +73,15 @@ void game_loop(struct tetris_data *data, struct server_data *s_data){
 					pieces[data->pool[data->pool_index]][data->rot][i], color_map);
 		}
 
+		int x = 50;
+		int y = 2;
+
+		int cx = x;
+		int cscore = data->score;
+		draw_number(y, x, data->score, 41, 1);
+
+		draw_number(y+9, x, data->max_score, 41, 1);
+
 		refresh();
 
 		usleep(60000);
