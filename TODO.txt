@@ -1,14 +1,9 @@
-Add score communication
-	The messages are already supported for score
-
 Add starting message (ct message)
 
-Add death check
-	Make death handlint
+Add bad message
+	Message that signals some fake communication
 
 Check and drop clients with illegal messages
-
-Update clearing method of buffer in comm_untils
 
 Add dropping clients
 	Drop clients that dont responds to game start

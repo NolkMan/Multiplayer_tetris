@@ -98,11 +98,15 @@ int check_for_message(char *buf, char **param){
 }
 
 int clear_message(char *buf){
-	//TODO dont use strcpy
 	for (int i=0; buf[i] != 0; i++){
 		if (buf[i] == DELIM){
 			if (buf[i+1] == '\n') i++;
-			strcpy(buf, buf+i+1);
+			for (int j = 0; j < BUFF_SIZE; j++){
+				if ((j+i+1) < BUFF_SIZE)
+					buf[j] = buf[j+i+1];
+				else
+					buf[j] = 0;
+			}
 			return i+1;
 		}
 	}
