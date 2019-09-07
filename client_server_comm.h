@@ -1,10 +1,12 @@
 #ifndef CLIENT_SERVER_COMM_H
 #define CLIENT_SERVER_COMM_H
 
+#include "shared.h"
+
 struct server_data{
 	int sock_fd;
 	unsigned int buff_size;
-	char buff[64];
+	char buff[BUFF_SIZE];
 	char buff_i;
 };
 

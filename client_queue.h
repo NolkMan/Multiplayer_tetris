@@ -1,9 +1,9 @@
 #ifndef CLIENT_QUEUE_H
 #define CLIENT_QUEUE_H
 
-#include "netinet/in.h"
+#include "shared.h"
 
-#define BUFF_SIZE 128
+#include "netinet/in.h"
 
 struct client_game_data{
 	int is_dead;
