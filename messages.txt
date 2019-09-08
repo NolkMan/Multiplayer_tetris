@@ -2,6 +2,7 @@ WRONG_MESSAGE_CODE - code for when message that is received does not have a prop
 NO_MESSAGE - code for when code did not find message in buffer
 
 MESSAGE_ACK "ak" acknowledgement that the client is still connected and similar
+MESSAGE_TIMEOUT "tm" Server response to client being timeout right before closing connection
 
 MESSAGE_GAME_STARTED "ct" client started a game
 MESSAGE_SCORE "cs <number>" client achieved this score

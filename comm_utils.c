@@ -8,6 +8,7 @@
 
 int find_code(char *buf){
 	if (buf[0] == 'a' && buf[1] == 'k') return MESSAGE_ACK;
+	if (buf[0] == 't' && buf[1] == 'm') return MESSAGE_TIMEOUT;
 	if (buf[0] == 'c'){
 		if (buf[1] == 's') return MESSAGE_SCORE;
 		if (buf[1] == 't') return MESSAGE_GAME_STARTED;
@@ -30,6 +31,7 @@ char * get_str(int code){
 		case MESSAGE_GAME_START: return "ss";
 		case MESSAGE_MAX_SCORE: return "sc";
 		case MESSAGE_GAME_END: return "se";
+		case MESSAGE_TIMEOUT: return "tm";
 	}
 	return NULL;
 }
