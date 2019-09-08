@@ -1,9 +1,4 @@
-Add starting message (ct message)
-
-Add bad message
-	Message that signals some fake communication
-
-Check and drop clients with illegal messages
+Add wrong message code for client
 
 Add dropping clients
 	Drop clients that dont responds to game start

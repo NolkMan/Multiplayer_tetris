@@ -18,7 +18,7 @@ int find_code(char *buf){
 		if (buf[1] == 'c') return MESSAGE_MAX_SCORE;
 		if (buf[1] == 'e') return MESSAGE_GAME_END;
 	}
-	return -1;
+	return WRONG_MESSAGE_CODE;
 }
 
 char * get_str(int code){

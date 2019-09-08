@@ -54,6 +54,13 @@ void manage_clients(struct game_data *g_data, struct client_queue *c_queue){
 			int n = clear_message(node->buff);
 			node->buff_i -= n;
 		}
+		if (message == WRONG_MESSAGE_CODE){
+			struct client_queue_node *nnode = node->next;
+			drop_client(node);
+			queue_drop(c_queue, node);
+			node = nnode;
+			continue;
+		}
 		if (message == MESSAGE_SCORE){
 			int score = atoi(param);
 			free(param);
@@ -69,6 +76,10 @@ void manage_clients(struct game_data *g_data, struct client_queue *c_queue){
 			node->g_data.is_dead = true;
 			g_data->alive --;
 		}
+		if (message == MESSAGE_GAME_STARTED){
+			node->g_data.started = true;
+		}
+
 		node = node->next;
 	}
 	if (send_max_score){
@@ -102,6 +113,7 @@ void manage_clients(struct game_data *g_data, struct client_queue *c_queue){
 			write(node->socket, message, mess_len);
 			node->g_data.is_dead = false;
 			node->g_data.score = 0;
+			node->g_data.started = false;
 			node = node->next;
 		}
 		g_data->max_score = 0;

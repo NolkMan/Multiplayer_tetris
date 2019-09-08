@@ -1,3 +1,4 @@
+WRONG_MESSAGE_CODE - code for when message that is received does not have a proper message code
 NO_MESSAGE - code for when code did not find message in buffer
 
 MESSAGE_ACK "ak" acknowledgement that the client is still connected and similar

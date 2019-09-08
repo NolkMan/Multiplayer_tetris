@@ -21,6 +21,11 @@ void game_loop(struct tetris_data *data, struct server_data *s_data){
 	int frame = 0;
 
 	char *param = NULL;
+	{
+		char * message = generate_message(MESSAGE_GAME_STARTED);
+		write(s_data->sock_fd, message, strlen(message));
+		free(message);
+	}
 	while (running){
 		frame ++;
 		int input;
@@ -49,6 +54,7 @@ void game_loop(struct tetris_data *data, struct server_data *s_data){
 				char * message = generate_message_with_param(MESSAGE_SCORE, scorestr);
 				if (message == NULL){ cexit(0); }
 				write(s_data->sock_fd, message, strlen(message));
+				free(message);
 				data->score_updated = 0;
 			}
 			

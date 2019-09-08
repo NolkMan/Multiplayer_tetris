@@ -7,6 +7,7 @@
 
 struct client_game_data{
 	int is_dead;
+	int started;
 	int score;
 };
 

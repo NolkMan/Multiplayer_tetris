@@ -13,6 +13,11 @@
 #include "unistd.h"
 #include "string.h"
 
+void drop_client(struct client_queue_node *node){
+	printf("Dropping client\n");
+	close(node->socket);
+}
+
 void server_accept(int server_fd, struct client_queue *queue){
 	queue->last->socket = accept(server_fd, 
 			(struct sockaddr *) &(queue->last->cli_addr), 

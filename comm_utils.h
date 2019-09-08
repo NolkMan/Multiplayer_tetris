@@ -1,6 +1,7 @@
 #ifndef COMM_UTILS_H
 #define COMM_UTILS_H
 
+#define WRONG_MESSAGE_CODE -1
 #define NO_MESSAGE 0
 #define MESSAGE_ACK 1
 
