@@ -18,7 +18,7 @@ void drop_client(struct client_queue_node *node){
 	close(node->socket);
 }
 
-void server_accept(int server_fd, struct client_queue *queue){
+void server_accept(int server_fd, struct client_queue *queue, struct timeval ctime){
 	queue->last->socket = accept(server_fd, 
 			(struct sockaddr *) &(queue->last->cli_addr), 
 			&(queue->last->cli_addr_len));
@@ -30,13 +30,15 @@ void server_accept(int server_fd, struct client_queue *queue){
 			return;
 		}
 	}
+	queue->last->last_response_sec = ctime.tv_sec;
+	queue->last->last_response_usec = ctime.tv_usec;
 	printf("Connected new client\n");
 	queue->last->connected = true;
 	
 	queue_push(queue);
 }
 
-void server_receive(struct client_queue *queue){
+void server_receive(struct client_queue *queue, struct timeval ctime){
 	struct client_queue_node *node = queue->first;
 	struct pollfd *p_fd = malloc(queue->client_queue_size* sizeof(struct pollfd));
 
@@ -66,6 +68,8 @@ void server_receive(struct client_queue *queue){
 		}*/
 		if ((p_fd[i].revents&POLLIN) == POLLIN){
 			printf("There is pollin\n");
+			node->last_response_sec = ctime.tv_sec;
+			node->last_response_usec = ctime.tv_usec;
 			int n = read(node->socket, node->buff+node->buff_i, BUFF_SIZE - 1 - node->buff_i);
 			node->buff_i += n;
 			if (n == 0){

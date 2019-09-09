@@ -4,4 +4,5 @@ Add dropping clients
 	Drop clients that dont responds to game start
 	Add timeout
 	Add acks
-	Drop clients when game is starting
+
+Put clients in lobby untill the game starts

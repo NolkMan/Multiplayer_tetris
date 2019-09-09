@@ -16,6 +16,8 @@ struct client_queue_node{
 	char buff[BUFF_SIZE];
 	int connected;
 	int socket;
+	unsigned long long last_response_sec;
+	unsigned int last_response_usec;
 	struct client_queue_node *next;
 	struct client_queue_node *prev;
 	struct sockaddr_in cli_addr;

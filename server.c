@@ -1,5 +1,6 @@
 #define false 0
 #define true 1
+#define TIMEOUT_TIME 
 #define _XOPEN_SOURCE 700
 #include <stdio.h>
 #include "stdlib.h"
@@ -143,6 +144,7 @@ void manage_clients(struct game_data *g_data, struct client_queue *c_queue){
 }
 
 void server_loop(int server_fd, struct client_queue *c_queue){
+	long long int time;
 	char *buffer = NULL;
 	size_t buff_size = 0;
 	int running = true;
@@ -157,8 +159,8 @@ void server_loop(int server_fd, struct client_queue *c_queue){
 	while (running){
 		last = current;
 
-		server_accept(server_fd, c_queue);
-		server_receive(c_queue);
+		server_accept(server_fd, c_queue, current);
+		server_receive(c_queue, current);
 
 		if (read_input(&buffer, &buff_size)){
 			if (buffer[0] == 'c'){
