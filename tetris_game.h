@@ -13,6 +13,7 @@ struct tetris_data{
 	int score_updated;
 	int max_score;
 	int is_dead;
+	int frame;
 };
 
 struct tetris_data create_new_game();

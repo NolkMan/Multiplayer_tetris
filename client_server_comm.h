@@ -2,12 +2,14 @@
 #define CLIENT_SERVER_COMM_H
 
 #include "shared.h"
+#include "tetris_game.h"
 
 struct server_data{
 	int sock_fd;
 	unsigned int buff_size;
 	char buff[BUFF_SIZE];
 	char buff_i;
+	struct tetris_data *t_data;
 };
 
 
