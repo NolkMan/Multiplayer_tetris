@@ -1,8 +1,19 @@
+Add menu
+	Add username and server text fields
+	Make user to be put in menu when he is timedout
+
+Make better lobby
+	Add chat
+
 Add wrong message code for client
+	Probably needs menu first
 
 Add dropping clients
 	Drop clients that dont responds to game start
-	Add timeout
+	Add timeout drops
+		Needs acks
 	Add acks
+		Just needs small change to the client 
+
 
 Put clients in lobby untill the game starts
