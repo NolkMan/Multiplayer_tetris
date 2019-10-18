@@ -27,22 +27,10 @@
 int game_loop(struct server_data *s_data){
 	struct tetris_data *data = s_data->t_data;
 
-	char *param = NULL;
 	data->frame ++;
 	int input;
 	while ((input=getch()) != -1){
 		parse_input(data, input);
-	}
-	int code = get_message(s_data, &param);
-	if (code != NO_MESSAGE){
-		if (code == MESSAGE_MAX_SCORE){
-			data->max_score = atoi(param);
-			free(param);
-			param = NULL;
-		}
-		if (code == MESSAGE_GAME_END){
-			return LOBBY_LOOP;
-		}
 	}
 	
 	if (data->frame % 6 == 0){
@@ -99,21 +87,8 @@ int game_loop(struct server_data *s_data){
  * \returns next loop step to do
  */
 int lobby_loop(struct server_data *s_data){ 
-	char *param = NULL;
-	int code = get_message(s_data, &param);
-	if (code != NO_MESSAGE){
-		// There should be no message in lobby that need a param
-		if (param != NULL){ 
-			free(param);
-			param = NULL;
-		}
-		if (code == MESSAGE_GAME_START){
-			*(s_data->t_data) = create_new_game();
-			char * message = generate_message(MESSAGE_GAME_STARTED);
-			write(s_data->sock_fd, message, strlen(message));
-			free(message);
-			return GAME_LOOP;
-		}
+	int input;
+	while ((input=getch()) != -1){
 	}
 	erase();
 
@@ -123,15 +98,49 @@ int lobby_loop(struct server_data *s_data){
 	return LOBBY_LOOP;
 }
 
-void menu_loop(){
+int menu_loop(struct server_data *s_data){
+	int input;
+	while ((input=getch()) != -1){
+	}
+	return MENU_LOOP;
+}
+
+/**
+ * Manages messages sent from server
+ * May change state
+ */
+void manage_connection(struct server_data *s_data, int *state){
+	char *param = NULL;
+	int code;
+	while ((code = get_message(s_data, &param)) != NO_MESSAGE){
+		if (code == MESSAGE_GAME_START){
+			*(s_data->t_data) = create_new_game();
+			char * message = generate_message(MESSAGE_GAME_STARTED);
+			write(s_data->sock_fd, message, strlen(message));
+			free(message);
+			*state = GAME_LOOP;
+		}
+		if (code == MESSAGE_MAX_SCORE){
+			s_data->t_data->max_score = atoi(param);
+		}
+		if (code == MESSAGE_GAME_END){
+			*state = LOBBY_LOOP;
+		}
+		if (param != NULL){ 
+			free(param);
+			param = NULL;
+		}
+	}
 }
 
 void loop(struct server_data *s_data){
 	int running = true;
 	int state = LOBBY_LOOP;
 	while (running){
+		manage_connection(s_data, &state);
 		switch (state){
 			case MENU_LOOP:
+				state = menu_loop(s_data);
 				break;
 			case LOBBY_LOOP:
 				state = lobby_loop(s_data);
