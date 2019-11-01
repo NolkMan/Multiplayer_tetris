@@ -11,9 +11,6 @@ Add wrong message code for client
 Add dropping clients
 	Drop clients that dont responds to game start
 	Add timeout drops
-		Needs acks
-	Add acks
-		Just needs small change to the client 
 
 Remove t_data field from heap and put it on stack
 	It is malloced in the client_server_comm.c in function create_server_data
