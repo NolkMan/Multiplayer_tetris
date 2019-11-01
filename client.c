@@ -10,6 +10,7 @@
 #include "stdlib.h"
 #include "string.h"
 #include "unistd.h"
+#include "sys/time.h"
 
 #include "shared.h"
 
@@ -40,19 +41,13 @@ int game_loop(struct server_data *s_data){
 		if (data->score_updated){
 			char scorestr[10];
 			sprintf(scorestr, "%d", data->score);
-			char * message = generate_message_with_param(MESSAGE_SCORE, scorestr);
-			if (message == NULL){ cexit(0); }
-			write(s_data->sock_fd, message, strlen(message));
-			free(message);
+			int succ = send_message(s_data, MESSAGE_SCORE, scorestr);
+			if (!succ) { cexit(0); }
 			data->score_updated = 0;
 		}
 		if (d != data->is_dead){
-			char * message = generate_message(MESSAGE_DEATH);
-			if (message == NULL){
-				cexit(0);
-			}
-			write(s_data->sock_fd, message, strlen(message));
-			free(message);
+			int succ = send_message(s_data, MESSAGE_DEATH, NULL);
+			if (!succ) { cexit(0); }
 		}
 	}
 
@@ -115,9 +110,8 @@ void manage_connection(struct server_data *s_data, int *state){
 	while ((code = get_message(s_data, &param)) != NO_MESSAGE){
 		if (code == MESSAGE_GAME_START){
 			*(s_data->t_data) = create_new_game();
-			char * message = generate_message(MESSAGE_GAME_STARTED);
-			write(s_data->sock_fd, message, strlen(message));
-			free(message);
+			int succ = send_message(s_data, MESSAGE_GAME_STARTED, NULL);
+			if (!succ) { cexit(0); }
 			*state = GAME_LOOP;
 		}
 		if (code == MESSAGE_MAX_SCORE){
@@ -126,10 +120,18 @@ void manage_connection(struct server_data *s_data, int *state){
 		if (code == MESSAGE_GAME_END){
 			*state = LOBBY_LOOP;
 		}
+		if (code == MESSAGE_TIMEOUT){ // TODO Do this better
+			printf("Timed out\n");
+			cexit(0);
+		}
 		if (param != NULL){ 
 			free(param);
 			param = NULL;
 		}
+	}
+	
+	if (!send_ack(s_data)){
+		cexit(0);
 	}
 }
 
@@ -168,21 +170,15 @@ int main(int argc, char **argv){
 		cexit(0);
 	}
 
-	struct server_data s_data;
-	s_data.sock_fd = sock_fd;
-	s_data.buff_size=64;
-	s_data.buff_i = 0;
-	memset(s_data.buff, '\0', sizeof(s_data.buff));
-	s_data.t_data = (struct tetris_data*) malloc(sizeof(struct tetris_data));
-	if (s_data.t_data == NULL){ // Will never happen on normal pc
-		exit(0);
-	}
+	struct server_data s_data = create_server_data(sock_fd);
 
 	// TODO Send username
 	{
 	}
 
 	loop(&s_data);
+
+	free(s_data.t_data);
 
 	cexit(0);
 }

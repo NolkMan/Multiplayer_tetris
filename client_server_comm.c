@@ -8,11 +8,13 @@
 #include "stdlib.h"
 #include "stdio.h"
 #include "string.h"
+#include "sys/time.h"
 
 #include "shared.h"
 #include "comm_utils.h"
 
 #include "poll.h"
+#include "utils.h"
 
 
 int get_message(struct server_data *s_data, char **param){
@@ -37,6 +39,21 @@ int get_message(struct server_data *s_data, char **param){
 	return code;
 }
 
+struct server_data create_server_data(int sock_fd){
+	struct timeval curr;
+	gettimeofday(&curr, NULL);
+	struct server_data s_data;
+	s_data.sock_fd = sock_fd;
+	s_data.buff_size=BUFF_SIZE;
+	s_data.buff_i = 0;
+	s_data.last_message = curr;
+	memset(s_data.buff, '\0', sizeof(s_data.buff));
+	s_data.t_data = (struct tetris_data*) malloc(sizeof(struct tetris_data));
+	if (s_data.t_data == NULL){
+		exit(0);
+	}
+	return s_data;
+}
 
 int connect_to_server(char *ip_addr){
 	int sock;
@@ -58,4 +75,39 @@ int connect_to_server(char *ip_addr){
 		return -1;
 	}
 	return sock;
+}
+
+void update_time(struct server_data *s_data){
+	struct timeval current;
+	gettimeofday(&current, NULL);
+
+	s_data->last_message = current;
+}
+
+int send_message(struct server_data *s_data, int code, char *param){
+	if (param){
+		char * message = generate_message_with_param(code, param);
+		if (message == NULL){
+			return 0;
+		}
+		update_time(s_data);
+		write(s_data->sock_fd, message, strlen(message));
+		free(message);
+	}else{
+		char * message = generate_message(code);
+		if (message == NULL){ return 0; }
+		update_time(s_data);
+		write(s_data->sock_fd, message, strlen(message));
+		free(message);
+	}
+	return 1;
+}
+
+int send_ack(struct server_data *s_data){
+	struct timeval curr;
+	gettimeofday(&curr, NULL);
+	if (mstime(s_data->last_message) + ACK_TIME < mstime(curr)){
+		return send_message(s_data, MESSAGE_ACK, NULL);
+	}
+	return 1;
 }

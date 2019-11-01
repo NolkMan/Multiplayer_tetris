@@ -15,5 +15,7 @@ Add dropping clients
 	Add acks
 		Just needs small change to the client 
 
+Remove t_data field from heap and put it on stack
+	It is malloced in the client_server_comm.c in function create_server_data
 
 Put clients in lobby untill the game starts

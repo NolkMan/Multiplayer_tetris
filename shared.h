@@ -7,4 +7,7 @@
 
 #define DELIM ':'
 
+// in miliseconds
+#define ACK_TIME 1000
+
 #endif
