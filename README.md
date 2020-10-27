@@ -1,4 +1,6 @@
 # TETRIS but Multiplayer
+Uses ncurses and tcp
+
 ### Compiling
 ```
 mkdir build
